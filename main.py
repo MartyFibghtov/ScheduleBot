@@ -29,7 +29,7 @@ vk = vk_session.get_api()
 logging.basicConfig(filename="sample.log", level=logging.INFO, filemode="w")
 
 FILENAME = "users"
-users_db = shelve.open(FILENAME)
+
 
 
 
@@ -168,7 +168,7 @@ def handle_user(peer_id, msg):
 
 
             if msg == "забыть меня":
-                del users_db[vk_id]
+                del users_db[peer_id]
 
                 keyboard = VkKeyboard(one_time=True)
                 keyboard.add_button('Начать', color=VkKeyboardColor.PRIMARY)
@@ -178,28 +178,33 @@ def handle_user(peer_id, msg):
 
 
 
+while True:
+    try:
+        users_db = shelve.open(FILENAME)
 
-for event in longpoll.listen():
-    pprint.pprint(event.type)
-    print("\n")
+        for event in longpoll.listen():
+            #pprint.pprint(event.type)
 
-    if event.type == VkBotEventType.MESSAGE_NEW and event.obj['message']['text']:
+            if event.type == VkBotEventType.MESSAGE_NEW and event.obj['message']['text']:
 
-        msg = event.obj['message']['text'].lower()
-        peer_id = str(event.obj['message']['peer_id'])
+                msg = event.obj['message']['text'].lower()
+                peer_id = str(event.obj['message']['peer_id'])
 
-        #users_db = shelve.open(FILENAME)
+                #users_db = shelve.open(FILENAME)
 
-        if int(peer_id) > 2000000000:
-            # Беседа
-            #print("Chat")
-            send(peer_id, "Извините, пока работают только личные сообщения", None)
+                if int(peer_id) > 2000000000:
+                    # Беседа
+                    #print("Chat")
+                    send(peer_id, "Извините, пока работают только личные сообщения", None)
 
-            #handle_chat()
-        else:
-            # Юзер
-            #print("User")
+                    #handle_chat()
+                else:
+                    # Юзер
+                    #print("User")
 
-            #send(peer_id, "User", None)
+                    #send(peer_id, "User", None)
 
-            handle_user(peer_id, msg)
+                    handle_user(peer_id, msg)
+    except Exception as e:
+        print(e)
+        db.close()
