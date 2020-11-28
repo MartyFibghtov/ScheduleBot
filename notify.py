@@ -50,7 +50,7 @@ def job():
 
 def format_schedule_one_day(schedule):
     if len(schedule) == 0:
-        return "Сегодня нет пар, отдыхаем!"
+        return "Сегодня нет пар, отдыхаем!" 
     res = schedule[0]['date']+"\n\n"
 
     for lesson in schedule:
