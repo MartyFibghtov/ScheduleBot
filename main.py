@@ -102,8 +102,6 @@ def handle_user(peer_id, msg):
             # Знаем почту пользователя
             user_email = users_db[peer_id]['email']
             if "расписание" in msg:
-                10/0
-
                 today = d.today()
                 formated_today = today.strftime("%Y.%m.%d")
                 schedule = ruz.get_student_schedule(user_email, formated_today, formated_today, "1")
