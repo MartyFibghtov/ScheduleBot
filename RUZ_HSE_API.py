@@ -56,5 +56,4 @@ def email_is_valid(email):
         resp['error']
         return False
     except Exception as e:
-        print(e)
         return True

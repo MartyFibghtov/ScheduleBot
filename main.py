@@ -26,7 +26,7 @@ longpoll = VkBotLongPoll(vk_session, 199174829)
 vk = vk_session.get_api()
 
 
-logging.basicConfig(filename="sample.log", level=logging.INFO, filemode="w")
+logging.basicConfig(filename="sample.log", level=logging.ERROR, filemode="w")
 
 FILENAME = "users"
 
@@ -102,7 +102,7 @@ def handle_user(peer_id, msg):
             # Знаем почту пользователя
             user_email = users_db[peer_id]['email']
             if "расписание" in msg:
-
+                10/0
 
                 today = d.today()
                 formated_today = today.strftime("%Y.%m.%d")
@@ -154,7 +154,7 @@ def handle_user(peer_id, msg):
                     send(peer_id, f.format_schedule_one_day(schedule), keyboard=users_db[peer_id]['keyboard'])
 
 
-            if msg == "меню":
+            if "меню" in msg:
                 keyboard = VkKeyboard(one_time=True)
                 keyboard.add_button('Расписание', color=VkKeyboardColor.PRIMARY)
                 keyboard.add_line()
@@ -164,10 +164,11 @@ def handle_user(peer_id, msg):
                 send(peer_id, 'Меню:', keyboard=keyboard.get_keyboard())
                 users_db[peer_id] = {'code': codes.REGISTRATED, 'email': user_email}
 
+            #if  "где пара?" in msg:
 
 
 
-            if msg == "забыть меня":
+            if "забыть меня" in msg:
                 del users_db[peer_id]
 
                 keyboard = VkKeyboard(one_time=True)
@@ -206,5 +207,5 @@ while True:
 
                     handle_user(peer_id, msg)
     except Exception as e:
-        print(e)
-        db.close()
+        logging.error(e, exc_info=True)
+        users_db.close()

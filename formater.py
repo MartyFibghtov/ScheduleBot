@@ -18,7 +18,7 @@ def format_shedule(schedule):
 def format_schedule_one_day(schedule):
     UTC_PLUS = 3
     if len(schedule) == 0:
-        return "Сегодня нет пар, отдыхаем!"
+        return "В этот день нет пар, отдыхаем!"
 
     res = schedule[0]['date_start'].split("T")[0]+"\n\n"
     res += """Пары на сегодня:"""
@@ -27,7 +27,6 @@ def format_schedule_one_day(schedule):
         time_start = str(int(lesson['date_start'].split("T")[1].split(":")[0])+UTC_PLUS) + ":" + lesson['date_start'].split("T")[1].split(":")[1]
 
         time_end = str(int(lesson['date_end'].split("T")[1].split(":")[0])+UTC_PLUS) + ":" + lesson['date_end'].split("T")[1].split(":")[1]
-
         res += """
         %s
         %s - %s
