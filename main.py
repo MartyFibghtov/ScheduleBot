@@ -78,7 +78,7 @@ def handle_user(peer_id, msg):
             if msg == 'да':
                 email = users_db[peer_id]['email']
                 users_db[peer_id] = {'code': codes.REGISTRATED, 'email': email}
-                keyboard = VkKeyboard(one_time=True)
+                keyboard = VkKeyboard(one_time=False)
                 keyboard.add_button('Расписание', color=VkKeyboardColor.PRIMARY)
                 keyboard.add_line()
                 keyboard.add_button('Где пара?', color=VkKeyboardColor.POSITIVE)
@@ -166,7 +166,7 @@ def handle_user(peer_id, msg):
 
                     return new_schedule
 
-                keyboard = VkKeyboard(one_time=True)
+                keyboard = VkKeyboard(one_time=False)
                 keyboard.add_button('Расписание', color=VkKeyboardColor.PRIMARY)
                 keyboard.add_line()
                 keyboard.add_button('Где пара?', color=VkKeyboardColor.POSITIVE)
@@ -185,7 +185,7 @@ def handle_user(peer_id, msg):
 
 
             if "меню" in msg:
-                keyboard = VkKeyboard(one_time=True)
+                keyboard = VkKeyboard(one_time=False)
                 keyboard.add_button('Расписание', color=VkKeyboardColor.PRIMARY)
                 keyboard.add_line()
                 keyboard.add_button('Где пара?', color=VkKeyboardColor.POSITIVE)
@@ -201,7 +201,7 @@ def handle_user(peer_id, msg):
             if "забыть меня" in msg:
                 del users_db[peer_id]
 
-                keyboard = VkKeyboard(one_time=True)
+                keyboard = VkKeyboard(one_time=False)
                 keyboard.add_button('Начать', color=VkKeyboardColor.PRIMARY)
                 send(peer_id, 'До встречи!', keyboard=keyboard.get_keyboard())
 
