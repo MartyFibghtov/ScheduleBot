@@ -109,7 +109,7 @@ def handle_user(peer_id, msg):
                 schedule = ruz.get_student_schedule(user_email, formated_today, formated_today, "1")
 
                 # Клавиатура других дней
-                keyboard = VkKeyboard(one_time=True)
+                keyboard = VkKeyboard(one_time=False)
                 dates = {}
                 weekdays_dict = {   0:"ПН",
                                     1:"ВТ",
