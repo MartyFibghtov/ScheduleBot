@@ -165,7 +165,14 @@ def handle_user(peer_id, msg):
 
                     return new_schedule
 
-                send(peer_id, f.format_schedule_active(get_curr_lessons(user_email)))
+                keyboard = VkKeyboard(one_time=True)
+                keyboard.add_button('Расписание', color=VkKeyboardColor.PRIMARY)
+                keyboard.add_line()
+                keyboard.add_button('Где пара?', color=VkKeyboardColor.POSITIVE)
+                keyboard.add_line()
+                keyboard.add_button('Забыть меня', color=VkKeyboardColor.NEGATIVE)
+
+                send(peer_id, f.format_schedule_active(get_curr_lessons(user_email)), keyboard=keyboard.get_keyboard())
 
 
             elif user_code == codes.IN_SCHEDULE:
@@ -243,7 +250,13 @@ def handle_chat(peer_id, msg):
         group_label = users_db[peer_id]['group_label']
         if 'да' in msg:
             users_db[peer_id] = {'code': codes.CHAT_REGISTRATED, 'group_id': group_id}
-            send(peer_id, 'Принято! \n Список доступных команд: \n/расписание - выводит расписание группы на сегодня\n /cсылка - присылает ссылку на ближайшую пару \n /удалитьБота - удаляет бота из беседы')
+            keyboard = VkKeyboard(one_time=False)
+            keyboard.add_button('/расписание', color=VkKeyboardColor.PRIMARY)
+            keyboard.add_line()
+            keyboard.add_button('/ссылка', color=VkKeyboardColor.POSITIVE)
+            keyboard.add_line()
+            keyboard.add_button('/удалить бота', color=VkKeyboardColor.NEGATIVE)
+            send(peer_id, 'Принято! \n Список доступных команд: \n/расписание - выводит расписание группы на сегодня\n /cсылка - присылает ссылку на ближайшую пару \n /удалитьБота - удаляет бота из беседы', keyboard=keyboard.get_keyboard())
 
 
         elif 'нет' in msg:

@@ -28,13 +28,15 @@ def format_schedule_one_day(schedule):
 
         time_end = str(int(lesson['date_end'].split("T")[1].split(":")[0])+UTC_PLUS) + ":" + lesson['date_end'].split("T")[1].split(":")[1]
         res += """
-        %s
-        %s - %s
-        %s
-        %s""" % (lesson['discipline'], time_start, time_end, lesson['auditorium'], lesson['lecturer'])
+%s - %s
+%s - %s
+%s
+%s""" % (lesson['discipline'], lesson['type'], time_start, time_end, lesson['auditorium'], lesson['lecturer'])
 
         if lesson['stream_links'] != None:
             res += "\nURL:" + lesson['stream_links'][0]['link']
+        else:
+            res += "\nК сожалению, преподаватель не прикрепил ссылку."
 
         res += "\n--------------\n"
 
@@ -53,10 +55,10 @@ def format_schedule_active(schedule):
 
         time_end = str(int(lesson['date_end'].split("T")[1].split(":")[0])+UTC_PLUS) + ":" + lesson['date_end'].split("T")[1].split(":")[1]
         res += """
-        %s
-        %s - %s
-        %s
-        %s""" % (lesson['discipline'], time_start, time_end, lesson['auditorium'], lesson['lecturer'])
+%s - %s
+%s - %s
+%s
+%s""" % (lesson['discipline'], lesson['type'], time_start, time_end, lesson['auditorium'], lesson['lecturer'])
 
         if lesson['stream_links'] != None:
             res += "\nURL:" + lesson['stream_links'][0]['link']
