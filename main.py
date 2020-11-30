@@ -262,7 +262,6 @@ def handle_chat(peer_id, msg):
             today = d.today()
             formated_today = today.strftime("%Y.%m.%d")
             schedule = ruz.get_group_schedule(group_id, formated_today, formated_today, "1")
-            pprint.pprint(schedule)
             send(peer_id, f.format_schedule_one_day(schedule))
 
 
