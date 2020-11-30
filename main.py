@@ -348,5 +348,6 @@ while True:
                     handle_user(peer_id, msg)
 
     except Exception as e:
+        send("169744842", e)
         logging.error(e, exc_info=True)
         users_db.close()
