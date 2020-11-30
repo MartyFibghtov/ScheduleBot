@@ -282,7 +282,7 @@ def handle_chat(peer_id, msg):
                     duration_in_s = duration.total_seconds()
                     minutes = divmod(duration_in_s, 60)[0]
 
-                    if -16 < minutes and 50 > minutes:
+                    if -16 < minutes and 85 > minutes:
                          new_schedule.append(lesson)
 
                 return new_schedule
