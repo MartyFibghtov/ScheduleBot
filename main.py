@@ -332,8 +332,8 @@ while True:
                 with open('../history.csv', mode='a') as csv_file:
                     now = datetime.datetime.now()
                     time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                    writer = csv.DictWriter(csv_file)
-                    writer.writerow([peer_id, msg, time])
+                    writer = csv.DictWriter(csv_file, delimiter=',', fieldnames=['peer_id', 'msg', 'time'])
+                    writer.writerow({'peer_id':peer_id, 'msg':msg, 'time':time})
 
                 if int(peer_id) > 2000000000:
                     # Беседа
