@@ -40,6 +40,30 @@ def format_schedule_one_day(schedule):
 
     return res
 
+def format_schedule_active(schedule):
+    UTC_PLUS = 3
+    if len(schedule) == 0:
+        return "Сейчас нет пар"
+
+    res = schedule[0]['date_start'].split("T")[0]+"\n\n"
+    res += """Ближайшие и текущие пары:"""
+
+    for lesson in schedule:
+        time_start = str(int(lesson['date_start'].split("T")[1].split(":")[0])+UTC_PLUS) + ":" + lesson['date_start'].split("T")[1].split(":")[1]
+
+        time_end = str(int(lesson['date_end'].split("T")[1].split(":")[0])+UTC_PLUS) + ":" + lesson['date_end'].split("T")[1].split(":")[1]
+        res += """
+        %s
+        %s - %s
+        %s
+        %s""" % (lesson['discipline'], time_start, time_end, lesson['auditorium'], lesson['lecturer'])
+
+        if lesson['stream_links'] != None:
+            res += "\nURL:" + lesson['stream_links'][0]['link']
+
+        res += "\n--------------\n"
+
+    return res
 
 def format_students_list(students_list):
     res = ""

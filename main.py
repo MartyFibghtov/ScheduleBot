@@ -11,6 +11,7 @@ import pprint
 import re
 from datetime import timedelta
 from datetime import date as d
+import datetime
 import shelve
 
 
@@ -143,7 +144,30 @@ def handle_user(peer_id, msg):
                 users_db[peer_id] = {'code': codes.IN_SCHEDULE, 'email': user_email, 'dates': dates, 'keyboard':keyboard.get_keyboard()}
 
 
-            #elif msg == "  "
+            elif "где пара" in msg or 'ссылка' in msg:
+                def get_curr_lessons(email_temp):
+                    today = d.today()
+                    formated_today = today.strftime("%Y.%m.%d")
+                    schedule = ruz.get_student_schedule(email_temp, formated_today, formated_today, "1")
+                    new_schedule = []
+                    for lesson in schedule:
+                        hh_start = int(lesson['date_start'].split("T")[1].split(":")[0])+3 # 12:30
+                        mm_start = int(lesson['date_start'].split("T")[1].split(":")[1])
+
+                        now  = datetime.datetime.now()
+                        lesson_start = now.replace(hour=hh_start, minute=mm_start)
+                        duration = now - lesson_start
+                        duration_in_s = duration.total_seconds()
+                        minutes = divmod(duration_in_s, 60)[0]
+
+                        if -16 < minutes and 50 > minutes:
+                             new_schedule.append(lesson)
+
+                    return new_schedule
+
+                send(peer_id, f.format_schedule_active(get_curr_lessons(user_email)))
+
+
             elif user_code == codes.IN_SCHEDULE:
                 if msg in users_db[peer_id]['dates']:
                     formated_date = users_db[peer_id]['dates'][msg]
@@ -162,7 +186,7 @@ def handle_user(peer_id, msg):
                 send(peer_id, 'Меню:', keyboard=keyboard.get_keyboard())
                 users_db[peer_id] = {'code': codes.REGISTRATED, 'email': user_email}
 
-            #if  "где пара?" in msg:
+
 
 
 
@@ -174,6 +198,108 @@ def handle_user(peer_id, msg):
                 send(peer_id, 'До встречи!', keyboard=keyboard.get_keyboard())
 
 
+def handle_chat(peer_id, msg):
+
+    # Незнакомый чат получает статус нового
+    if peer_id not in users_db:
+        users_db[peer_id] = {'code': codes.NEW_CHAT, 'group_id': None}
+
+    # Код чата показывает как с ним взаимодействовать
+    user_code = users_db[peer_id]['code']
+    logging.error(user_code)
+
+    # Чат впервые к нам попал, запрашиваем email. Меняем статус.
+    if user_code == codes.NEW_CHAT:
+        send(peer_id, 'Добрый день! Чтобы мы могли найти ваше расписание, сообщите название вашей группы')
+        users_db[peer_id] = {'code': codes.WAITING_FOR_CHAT_NAME, 'group_id': None}
+
+
+    # Ждем от чата название группы. Просим подтверждение.
+    elif user_code == codes.WAITING_FOR_CHAT_NAME:
+        group_name = msg.strip()
+        group_list = ruz.get_groups_list(group_name)
+        num_of_rets = len(group_list)
+
+        if num_of_rets == 1:
+                group = group_list[0]
+                group_label = group['label']
+                group_id = group['id']
+                keyboard = VkKeyboard(one_time=True)
+                keyboard.add_button("Да", color=VkKeyboardColor.PRIMARY)
+                keyboard.add_button("Нет", color=VkKeyboardColor.PRIMARY)
+
+                send(peer_id, "%s, сохранить эту группу?\n - Да \n - Нет" % group_label, keyboard=keyboard.get_keyboard())
+                users_db[peer_id] = {'code': codes.WAITING_FOR_CHAT_NAME_CONFIRMATION, 'group_id': group_id, 'group_label': group_label}
+
+        elif num_of_rets == 0:
+                send(peer_id, "Такой группы я не знаю 😕 \n Проверьте правильность введенных данных")
+
+        elif num_of_rets > 1:
+                send(peer_id, "Уточните название группы, под ваш запрос подходит %s групп 🤔" % num_of_rets)
+
+    elif user_code == codes.WAITING_FOR_CHAT_NAME_CONFIRMATION:
+        # Подтверждает название группы
+        group_id = users_db[peer_id]['group_id']
+        group_label = users_db[peer_id]['group_label']
+        if 'да' in msg:
+            users_db[peer_id] = {'code': codes.CHAT_REGISTRATED, 'group_id': group_id}
+            send(peer_id, 'Принято! \n Список доступных команд: \n/расписание - выводит расписание группы на сегодня\n /cсылка - присылает ссылку на ближайшую пару \n /удалитьБота - удаляет бота из беседы')
+
+
+        elif 'нет' in msg:
+            send(peer_id, 'Хорошо, сообщите название вашей группы')
+            users_db[peer_id] = {'code': codes.WAITING_FOR_CHAT_NAME, 'group_id': None}
+
+        else:
+            send(peer_id, 'Простите, я вас не поняла :(')
+            send(peer_id, "%s, сохранить эту группу?\n Да \n Нет" % group_label)
+
+
+    elif user_code >= codes.CHAT_REGISTRATED:
+        # Знаем ID чата
+        group_id = users_db[peer_id]['group_id']
+        if "/расписание" in msg:
+            today = d.today()
+            formated_today = today.strftime("%Y.%m.%d")
+            schedule = ruz.get_group_schedule(group_id, formated_today, formated_today, "1")
+            pprint.pprint(schedule)
+            send(peer_id, f.format_schedule_one_day(schedule))
+
+
+        elif "/ссылка" in msg:
+
+            def get_curr_lessons(group_id_temp):
+                today = d.today()
+                formated_today = today.strftime("%Y.%m.%d")
+                schedule = ruz.get_group_schedule(group_id_temp, formated_today, formated_today, "1")
+                new_schedule = []
+                for lesson in schedule:
+                    hh_start = int(lesson['date_start'].split("T")[1].split(":")[0])+3 # 12:30
+                    mm_start = int(lesson['date_start'].split("T")[1].split(":")[1])
+
+                    now  = datetime.datetime.now()
+                    lesson_start = now.replace(hour=hh_start, minute=mm_start)
+                    duration = now - lesson_start
+                    duration_in_s = duration.total_seconds()
+                    minutes = divmod(duration_in_s, 60)[0]
+
+                    if -16 < minutes and 50 > minutes:
+                         new_schedule.append(lesson)
+
+                return new_schedule
+
+
+
+
+
+            send(peer_id, f.format_schedule_active(get_curr_lessons(group_id)))
+
+
+
+        elif "/удалитьбота" in msg:
+            del users_db[peer_id]
+            send(peer_id, 'До встречи!')
+
 
 
 
@@ -182,28 +308,25 @@ while True:
         users_db = shelve.open(FILENAME)
 
         for event in longpoll.listen():
-            #pprint.pprint(event.type)
-
             if event.type == VkBotEventType.MESSAGE_NEW and event.obj['message']['text']:
 
                 msg = event.obj['message']['text'].lower()
                 peer_id = str(event.obj['message']['peer_id'])
 
-                #users_db = shelve.open(FILENAME)
-
                 if int(peer_id) > 2000000000:
                     # Беседа
-                    #print("Chat")
-                    send(peer_id, "Извините, пока работают только личные сообщения", None)
 
-                    #handle_chat()
+                    msg = msg.replace('[club199174829|@hseplanandschedule]', '')
+                    msg = re.sub(r'[\s,.]', '', msg)
+                    print(msg)
+
+                    handle_chat(peer_id, msg)
+
                 else:
                     # Юзер
-                    #print("User")
-
-                    #send(peer_id, "User", None)
 
                     handle_user(peer_id, msg)
+
     except Exception as e:
         logging.error(e, exc_info=True)
         users_db.close()

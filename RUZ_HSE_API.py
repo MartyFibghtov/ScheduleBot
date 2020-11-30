@@ -8,8 +8,7 @@ from datetime import date, timedelta
 
 
 main_url = "https://ruz.hse.ru"
-#https://ruz.hse.ru/api/search?term=Денис&type=student
-#/api/schedule/student/217275?start=2020.09.28&finish=2020.10.04&lng=1
+
 
 def get_students_list(student_name):
     params = { 'term': student_name,
@@ -17,16 +16,7 @@ def get_students_list(student_name):
     url = main_url+'/api/search'
     r = requests.get(url, params=params)
     return json.loads(r.text)
-"""
-def get_student_schedule(student_id, start_date, end_date, lng): # ('254711', '2020.09.28','2020.10.04', 1)
-    params = { 'start': start_date,
-               'finish': end_date,
-               'lng': 1
-               }
-    url = main_url + '/api/schedule/student/' + student_id
-    r = requests.get(url, params=params)
-    return json.loads(r.text)
-"""
+
 
 def get_student_schedule(email, start_date, end_date, lng): # ('254711', '2020.09.28','2020.10.04', 1)
     params = { 'start': start_date,
@@ -38,9 +28,27 @@ def get_student_schedule(email, start_date, end_date, lng): # ('254711', '2020.0
     r = requests.get(url, params=params, headers=headers)
     return json.loads(r.text)
 
-"""
-https://api.hseapp.ru/v3/ruz/lessons?end=2020-11-12&start=2020-11-12&email=atnurmatov@edu.hse.ru
-"""
+def get_group_schedule(group_id, start_date, end_date, lng): # ('254711', '2020.09.28','2020.10.04', 1)
+    params = { 'start': start_date,
+               'end': end_date,
+               'group': group_id
+               }
+    headers = {"Accept-Language": "ru-RU, ru;q=0.9"}
+    url = 'https://api.hseapp.ru/v3/ruz/lessons'
+    r = requests.get(url, params=params, headers=headers)
+    return json.loads(r.text)
+
+
+def get_groups_list(group_name):
+    # https://ruz.hse.ru/api/search?term=ББИ2008&type=group
+    params = { 'term': group_name,
+               'type': 'group'}
+    url = 'https://ruz.hse.ru/api/search'
+    r = requests.get(url, params=params)
+    return json.loads(r.text)
+
+
+
 
 
 def email_is_valid(email):
