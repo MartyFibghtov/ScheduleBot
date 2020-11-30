@@ -329,7 +329,7 @@ while True:
                 peer_id = str(event.obj['message']['peer_id'])
 
                 with open('../history.csv', mode='a') as csv_file:
-                    time = DateTime.Now.ToString("MM/dd/yyyy HH:mm")
+                    time = datetime.Now.ToString("MM/dd/yyyy HH:mm")
                     writer = csv.DictWriter(csv_file)
                     writer.writerow([peer_id, msg, time])
 
