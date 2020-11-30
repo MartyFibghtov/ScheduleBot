@@ -60,7 +60,8 @@ def format_schedule_active(schedule):
 
         if lesson['stream_links'] != None:
             res += "\nURL:" + lesson['stream_links'][0]['link']
-
+        else:
+            res += "К сожалению, преподаватель не прикрепил ссылку"
         res += "\n--------------\n"
 
     return res
