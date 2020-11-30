@@ -84,7 +84,7 @@ def handle_user(peer_id, msg):
                 keyboard.add_line()
                 keyboard.add_button('Забыть меня', color=VkKeyboardColor.NEGATIVE)
 
-                send(peer_id, 'Принято!', keyboard=keyboard.get_keyboard())
+                send(peer_id, 'Принято!\n Расписание - выводит ваше расписание на сегодня\n Где пара? - присылает ссылку на ближайшую пару \n Забыть меня - удаляет бота из беседы', keyboard=keyboard.get_keyboard())
 
 
             elif msg == 'нет':
@@ -183,7 +183,7 @@ def handle_user(peer_id, msg):
                 keyboard.add_button('Где пара?', color=VkKeyboardColor.POSITIVE)
                 keyboard.add_line()
                 keyboard.add_button('Забыть меня', color=VkKeyboardColor.NEGATIVE)
-                send(peer_id, 'Меню:', keyboard=keyboard.get_keyboard())
+                send(peer_id, 'Меню:\n Расписание - выводит ваше расписание на сегодня\n Где пара? - присылает ссылку на ближайшую пару \n Забыть меня - удаляет бота из беседы', keyboard=keyboard.get_keyboard())
                 users_db[peer_id] = {'code': codes.REGISTRATED, 'email': user_email}
 
 
