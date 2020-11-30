@@ -29,7 +29,7 @@ vk = vk_session.get_api()
 
 logging.basicConfig(filename="sample.log", level=logging.ERROR, filemode="w")
 
-FILENAME = "users"
+FILENAME = "../users"
 
 
 
