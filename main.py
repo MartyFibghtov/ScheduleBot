@@ -251,12 +251,12 @@ def handle_chat(peer_id, msg):
         group_label = users_db[peer_id]['group_label']
         if 'да' in msg:
             users_db[peer_id] = {'code': codes.CHAT_REGISTRATED, 'group_id': group_id}
-            keyboard = VkKeyboard(one_time=False)
+            keyboard = VkKeyboard(one_time=True)
             keyboard.add_button('/расписание', color=VkKeyboardColor.PRIMARY)
             keyboard.add_line()
             keyboard.add_button('/ссылка', color=VkKeyboardColor.POSITIVE)
-            keyboard.add_line()
-            keyboard.add_button('/удалить бота', color=VkKeyboardColor.NEGATIVE)
+            #keyboard.add_line()
+            #keyboard.add_button('/удалить бота', color=VkKeyboardColor.NEGATIVE)
             send(peer_id, 'Принято! \n Список доступных команд: \n/расписание - выводит расписание группы на сегодня\n /cсылка - присылает ссылку на ближайшую пару \n /удалитьБота - удаляет бота из беседы', keyboard=keyboard.get_keyboard())
 
 
