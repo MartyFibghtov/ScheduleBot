@@ -340,7 +340,6 @@ while True:
 
                     msg = msg.replace('[club199174829|@hseplanandschedule]', '')
                     msg = re.sub(r'[\s,.]', '', msg)
-                    print(msg)
 
                     handle_chat(peer_id, msg)
 
