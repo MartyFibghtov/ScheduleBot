@@ -170,8 +170,8 @@ def handle_user(peer_id, msg):
                 keyboard.add_button('Расписание', color=VkKeyboardColor.PRIMARY)
                 keyboard.add_line()
                 keyboard.add_button('Где пара?', color=VkKeyboardColor.POSITIVE)
-                keyboard.add_line()
-                keyboard.add_button('Забыть меня', color=VkKeyboardColor.NEGATIVE)
+                #keyboard.add_line()
+                #keyboard.add_button('Забыть меня', color=VkKeyboardColor.NEGATIVE)
 
                 send(peer_id, f.format_schedule_active(get_curr_lessons(user_email)), keyboard=keyboard.get_keyboard())
 
@@ -189,8 +189,8 @@ def handle_user(peer_id, msg):
                 keyboard.add_button('Расписание', color=VkKeyboardColor.PRIMARY)
                 keyboard.add_line()
                 keyboard.add_button('Где пара?', color=VkKeyboardColor.POSITIVE)
-                keyboard.add_line()
-                keyboard.add_button('Забыть меня', color=VkKeyboardColor.NEGATIVE)
+                #keyboard.add_line()
+                #keyboard.add_button('Забыть меня', color=VkKeyboardColor.NEGATIVE)
                 send(peer_id, 'Меню:\n Расписание - выводит ваше расписание на сегодня\n Где пара? - присылает ссылку на ближайшую пару \n Забыть меня - удаляет бота из беседы', keyboard=keyboard.get_keyboard())
                 users_db[peer_id] = {'code': codes.REGISTRATED, 'email': user_email}
 
